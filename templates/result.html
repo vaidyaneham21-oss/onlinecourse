@@ -1,13 +1,9 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Result</title>
-</head>
-<body>
-
 <h1>Congratulations!</h1>
-<p>Your Score: 80%</p>
-<p>Exam completed successfully.</p>
+<p>Your Score: {{ score }}</p>
+<p>Exam Results:</p>
 
-</body>
-</html>
+<ul>
+{% for choice in submission.choices.all %}
+    <li>{{ choice.choice_text }}</li>
+{% endfor %}
+</ul>
