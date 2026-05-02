@@ -11,6 +11,9 @@ class Course(models.Model):
     name = models.CharField(max_length=200)
     instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.name
+
 class Lesson(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
@@ -21,9 +24,8 @@ class Question(models.Model):
 
     def is_get_score(self, selected_ids):
         correct_choices = self.choice_set.filter(is_correct=True)
-        if set([c.id for c in correct_choices]) == set(selected_ids):
-            return 1
-        return 0
+        correct_ids = set([c.id for c in correct_choices])
+        return correct_ids == set(selected_ids)
 
 class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
