@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Course, Submission, Choice, Learner
+from .models import Course, Submission, Choice, Learner, Question
 
 def submit(request, course_id):
     course = get_object_or_404(Course, pk=course_id)
@@ -18,14 +18,19 @@ def show_exam_result(request, course_id, submission_id):
     course = get_object_or_404(Course, pk=course_id)
     submission = get_object_or_404(Submission, pk=submission_id)
 
-    choices = submission.choices.all()
+    selected_ids = [choice.id for choice in submission.choices.all()]
 
-    total = 0
-    for choice in choices:
-        if choice.is_correct:
-            total += 1
+    total_score = 0
+    possible_score = 0
+
+    for question in Question.objects.filter(lesson__course=course):
+        possible_score += 1
+        if question.is_get_score(selected_ids):
+            total_score += 1
 
     return render(request, 'result.html', {
         'course': course,
-        'score': total
+        'selected_ids': selected_ids,
+        'grade': total_score,
+        'possible': possible_score
     })
